@@ -1,7 +1,7 @@
 # Таблица parents, которая содержит информацию о родственных связях пользователей соц. сети 
 # (по сути добавление к таблице profiles - связь "один к одному")
 CREATE TABLE IF NOT EXISTS `parents`(
-	`for_whom_user_id` BIGINT UNSIGNED NOT NULL COMMENT 'Чей родственник',
+    `for_whom_user_id` BIGINT UNSIGNED NOT NULL COMMENT 'Чей родственник',
     `parent_user_id` BIGINT UNSIGNED NOT NULL,
     `parent_status` ENUM('Дедушка/Бабушка', 'Отец/Мать', 'Брат/Сестра', 'Сын/Дочь', 'Внук/Внучка'),
     PRIMARY KEY (`for_whom_user_id`, `parent_user_id`), 
@@ -11,9 +11,9 @@ CREATE TABLE IF NOT EXISTS `parents`(
 
 # Таблица conversations, которая содержит общую информацию о беседах в соц. сети
 CREATE TABLE IF NOT EXISTS `conversations`(
-	`id` SERIAL PRIMARY KEY,
+    `id` SERIAL PRIMARY KEY,
     `name` VARCHAR(100),
-	`photo_id` BIGINT UNSIGNED NULL,
+    `photo_id` BIGINT UNSIGNED NULL,
     `created_by_id` BIGINT UNSIGNED NOT NULL COMMENT 'ID создателя',
     `created_at` DATETIME DEFAULT NOW(),
     `updated_at` DATETIME ON UPDATE CURRENT_TIMESTAMP,
@@ -24,10 +24,10 @@ CREATE TABLE IF NOT EXISTS `conversations`(
 
 # Таблица conversations, которая содержит информацию об участниках бесед (связь один к многим)
 CREATE TABLE IF NOT EXISTS `conversations_members`(
-	`id` SERIAL PRIMARY KEY,
-	`conversation_id` BIGINT UNSIGNED NOT NULL,
+    `id` SERIAL PRIMARY KEY,
+    `conversation_id` BIGINT UNSIGNED NOT NULL,
     `member_id` BIGINT UNSIGNED NOT NULL,
-	`member_status` TINYINT(1) UNSIGNED COMMENT 'Cтатус пользователя: 1 - участвует в беседе, 0 - покинул её',
+    `member_status` TINYINT(1) UNSIGNED COMMENT 'Cтатус пользователя: 1 - участвует в беседе, 0 - покинул её',
     `created_at` DATETIME DEFAULT NOW(),
     `updated_at` DATETIME ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (`conversation_id`) REFERENCES `conversations`(`id`),
