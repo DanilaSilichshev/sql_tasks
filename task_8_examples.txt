@@ -1,0 +1,47 @@
+Microsoft Windows [Version 10.0.19043.1288]
+(c) Корпорация Майкрософт (Microsoft Corporation). Все права защищены.
+
+C:\Users\Данил>mysql
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 63
+Server version: 8.0.26 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> USE `vk`;
+Database changed
+mysql> SET @current_user_id := 1;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> SELECT CONCAT(`lastname`," ",`firstname`) AS `User Full name`, `from_user_id`, COUNT(*) AS `Messages quantity` FROM `messages` JOIN `users` ON `messages`.from_user_id = `users`.id WHERE `to_user_id` = @current_user_id GROUP BY `from_user_id` ORDER BY `Messages quantity` DESC LIMIT 1;
++-------------------+--------------+-------------------+
+| User Full name    | from_user_id | Messages quantity |
++-------------------+--------------+-------------------+
+| Kilback Frederick |            8 |                 9 |
++-------------------+--------------+-------------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT COUNT(*) AS `Total likes` FROM `likes` `l` JOIN `media` `m` ON `l`.media_id = `m`.id JOIN`profiles` `pr` ON  `m`.user_id = `pr`.user_id WHERE YEAR(NOW())-YEAR(`birthday`) < 10;
++-------------+
+| Total likes |
++-------------+
+|           3 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT IF(`gender` = 'm','мужской',IF(`gender` = 'f','женский','x')) AS `gender`, COUNT(*) AS `Gender likes` FROM `likes` JOIN `profiles` ON `likes`.user_id = `profiles`.user_id GROUP BY `gender` ORDER BY `Gender likes` DESC LIMIT 1;
++---------+--------------+
+| gender  | Gender likes |
++---------+--------------+
+| женский |           10 |
++---------+--------------+
+1 row in set, 1 warning (0.01 sec)
+
+mysql> exit
+Bye
