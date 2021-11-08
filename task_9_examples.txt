@@ -1,0 +1,277 @@
+Microsoft Windows [Version 10.0.19043.1288]
+(c) Корпорация Майкрософт (Microsoft Corporation). Все права защищены.
+
+C:\Users\Данил>mysql
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 25
+Server version: 8.0.26 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> START TRANSACTION;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> INSERT INTO `sample`.users SELECT * FROM `shop`.users WHERE `id` = 1;
+Query OK, 1 row affected (0.00 sec)
+Records: 1  Duplicates: 0  Warnings: 0
+
+mysql> COMMIT;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> SELECT * FROM `sample`.users;
++----+----------+-------------+---------------------+---------------------+
+| id | name     | birthday_at | created_at          | updated_at          |
++----+----------+-------------+---------------------+---------------------+
+|  1 | Геннадий | 1990-10-05  | 2021-10-30 23:15:47 | 2021-10-30 23:15:47 |
++----+----------+-------------+---------------------+---------------------+
+1 row in set (0.00 sec)
+
+mysql> USE `shop`;
+Database changed
+mysql> CREATE VIEW `products_catalog` AS SELECT `products`.name AS `product_name`, `catalogs`.name AS `catalog_name`FROM `products` INNER JOIN `catalogs` ON `products`.catalog_id = `catalogs`.id;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> SELECT * FROM `products_catalog`;
++-------------------------+-------------------+
+| product_name            | catalog_name      |
++-------------------------+-------------------+
+| Intel Core i3-8100      | Процессоры        |
+| Intel Core i5-7400      | Процессоры        |
+| AMD FX-8320E            | Процессоры        |
+| AMD FX-8320             | Процессоры        |
+| ASUS ROG MAXIMUS X HERO | Материнские платы |
+| Gigabyte H310M S2H      | Материнские платы |
+| MSI B250M GAMING PRO    | Материнские платы |
++-------------------------+-------------------+
+7 rows in set (0.00 sec)
+
+mysql> DROP USER IF EXISTS "shop_reader"@"localhost";
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CREATE USER "shop_reader"@"localhost" IDENTIFIED WITH sha256_password BY "password";
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> GRANT SELECT ON `shop`.* TO "shop_reader"@"localhost";
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DROP USER IF EXISTS "shop"@"localhost";
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CREATE USER "shop"@"localhost" IDENTIFIED WITH sha256_password BY "password";
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> GRANT ALL ON `shop`.* TO "shop"@"localhost";
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> GRANT GRANT OPTION ON `shop`.* TO "shop"@"localhost";
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> exit;
+Bye
+
+C:\Users\Данил>mysql -u shop_reader -p
+Enter password: ********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 27
+Server version: 8.0.26 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> USE `shop`;
+Database changed
+mysql> INSERT INTO `catalogs` (`name`) VALUES (`New`);
+ERROR 1142 (42000): INSERT command denied to user 'shop_reader'@'localhost' for table 'catalogs'
+mysql> SELECT * FROM `catalogs`;
++----+--------------------+
+| id | name               |
++----+--------------------+
+|  1 | Процессоры         |
+|  2 | Материнские платы  |
+|  3 | Видеокарты         |
+|  4 | Жесткие диски      |
+|  5 | Оперативная память |
++----+--------------------+
+5 rows in set (0.00 sec)
+
+mysql> exit;
+Bye
+
+C:\Users\Данил>mysql -u shop -p
+Enter password: ********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 28
+Server version: 8.0.26 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> USE `shop`;
+Database changed
+mysql>  INSERT INTO `catalogs` (`name`) VALUES ('New');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM `catalogs`;
++----+--------------------+
+| id | name               |
++----+--------------------+
+|  1 | Процессоры         |
+|  2 | Материнские платы  |
+|  3 | Видеокарты         |
+|  4 | Жесткие диски      |
+|  5 | Оперативная память |
+|  6 | New                |
++----+--------------------+
+6 rows in set (0.00 sec)
+
+mysql> exit;
+Bye
+
+C:\Users\Данил>mysql
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 29
+Server version: 8.0.26 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> USE `shop`;
+Database changed
+mysql> CREATE VIEW `username` AS SELECT `id` AS `user_id`, `name` AS `usr_name` FROM `accounts`;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DROP USER IF EXISTS "user_read"@"localhost";
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CREATE USER "user_read"@"localhost" IDENTIFIED WITH sha256_password BY "password";
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> GRANT SELECT ON `shop`.`username` TO "user_read"@"localhost";
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> exit;
+Bye
+
+C:\Users\Данил>mysql -u user_read -p
+Enter password: ********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 30
+Server version: 8.0.26 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> USE `shop`;
+Database changed
+mysql> SELECT * FROM `catalogs`;
+ERROR 1142 (42000): SELECT command denied to user 'user_read'@'localhost' for table 'catalogs'
+mysql> SELECT * FROM `username`;
++---------+----------+
+| user_id | usr_name |
++---------+----------+
+|       1 | Alisa    |
+|       2 | Liya     |
+|       3 | John     |
++---------+----------+
+3 rows in set (0.00 sec)
+
+mysql> exit;
+Bye
+
+C:\Users\Данил>mysql
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 35
+Server version: 8.0.26 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> USE `shop`;
+Database changed
+mysql> SELECT hello();
++-------------+
+| hello()     |
++-------------+
+| Доброй ночи |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT NOW();
++---------------------+
+| NOW()               |
++---------------------+
+| 2021-11-09 03:50:35 |
++---------------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT * FROM `products`;
++----+-------------------------+-----------------------------------------------------------------------------------+----------+------------+---------------------+---------------------+
+| id | name                    | description                                                                       | price    | catalog_id | created_at          | updated_at          |
++----+-------------------------+-----------------------------------------------------------------------------------+----------+------------+---------------------+---------------------+
+|  1 | Intel Core i3-8100      | Процессор для настольных персональных компьютеров, основанных на платформе Intel. |  7890.00 |          1 | 2021-10-30 23:15:47 | 2021-10-30 23:15:47 |
+|  2 | Intel Core i5-7400      | Процессор для настольных персональных компьютеров, основанных на платформе Intel. | 12700.00 |          1 | 2021-10-30 23:15:47 | 2021-10-30 23:15:47 |
+|  3 | AMD FX-8320E            | Процессор для настольных персональных компьютеров, основанных на платформе AMD.   |  4780.00 |          1 | 2021-10-30 23:15:47 | 2021-10-30 23:15:47 |
+|  4 | AMD FX-8320             | Процессор для настольных персональных компьютеров, основанных на платформе AMD.   |  7120.00 |          1 | 2021-10-30 23:15:47 | 2021-10-30 23:15:47 |
+|  5 | ASUS ROG MAXIMUS X HERO | Материнская плата ASUS ROG MAXIMUS X HERO, Z370, Socket 1151-V2, DDR4, ATX        | 19310.00 |          2 | 2021-10-30 23:15:47 | 2021-10-30 23:15:47 |
+|  6 | Gigabyte H310M S2H      | Материнская плата Gigabyte H310M S2H, H310, Socket 1151-V2, DDR4, mATX            |  4790.00 |          2 | 2021-10-30 23:15:47 | 2021-10-30 23:15:47 |
+|  7 | MSI B250M GAMING PRO    | Материнская плата MSI B250M GAMING PRO, B250, Socket 1151, DDR4, mATX             |  5060.00 |          2 | 2021-10-30 23:15:47 | 2021-10-30 23:15:47 |
++----+-------------------------+-----------------------------------------------------------------------------------+----------+------------+---------------------+---------------------+
+7 rows in set (0.00 sec)
+
+mysql> INSERT INTO `products` (`name`, `description`, `price`, `catalog_id`)VALUES ("ASUS ROG MAXIMUS X HERO", "Тип процессора: 2-е поколение/1-е поколение AMD Ryzen/Ryzen с графикой Radeon Vega", 9000, 7);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO `products` (`name`, `description`, `price`, `catalog_id`)VALUES (NULL, NULL, 2000, 1);
+ERROR 1644 (45000): Trigger Warning! NULL в обоих полях!
+mysql> INSERT INTO `products` (`name`, `description`, `price`, `catalog_id`)VALUES ("ASUS ROG MAXIMUS X HERO", NULL, 9000, 7);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM `products`;
++----+-------------------------+------------------------------------------------------------------------------------+----------+------------+---------------------+---------------------+
+| id | name                    | description                                                                        | price    | catalog_id | created_at          | updated_at          |
++----+-------------------------+------------------------------------------------------------------------------------+----------+------------+---------------------+---------------------+
+|  1 | Intel Core i3-8100      | Процессор для настольных персональных компьютеров, основанных на платформе Intel.  |  7890.00 |          1 | 2021-10-30 23:15:47 | 2021-10-30 23:15:47 |
+|  2 | Intel Core i5-7400      | Процессор для настольных персональных компьютеров, основанных на платформе Intel.  | 12700.00 |          1 | 2021-10-30 23:15:47 | 2021-10-30 23:15:47 |
+|  3 | AMD FX-8320E            | Процессор для настольных персональных компьютеров, основанных на платформе AMD.    |  4780.00 |          1 | 2021-10-30 23:15:47 | 2021-10-30 23:15:47 |
+|  4 | AMD FX-8320             | Процессор для настольных персональных компьютеров, основанных на платформе AMD.    |  7120.00 |          1 | 2021-10-30 23:15:47 | 2021-10-30 23:15:47 |
+|  5 | ASUS ROG MAXIMUS X HERO | Материнская плата ASUS ROG MAXIMUS X HERO, Z370, Socket 1151-V2, DDR4, ATX         | 19310.00 |          2 | 2021-10-30 23:15:47 | 2021-10-30 23:15:47 |
+|  6 | Gigabyte H310M S2H      | Материнская плата Gigabyte H310M S2H, H310, Socket 1151-V2, DDR4, mATX             |  4790.00 |          2 | 2021-10-30 23:15:47 | 2021-10-30 23:15:47 |
+|  7 | MSI B250M GAMING PRO    | Материнская плата MSI B250M GAMING PRO, B250, Socket 1151, DDR4, mATX              |  5060.00 |          2 | 2021-10-30 23:15:47 | 2021-10-30 23:15:47 |
+| 10 | ASUS ROG MAXIMUS X HERO | Тип процессора: 2-е поколение/1-е поколение AMD Ryzen/Ryzen с графикой Radeon Vega |  9000.00 |          7 | 2021-11-09 03:52:40 | 2021-11-09 03:52:40 |
+| 11 | ASUS ROG MAXIMUS X HERO | NULL                                                                               |  9000.00 |          7 | 2021-11-09 03:53:15 | 2021-11-09 03:53:15 |
++----+-------------------------+------------------------------------------------------------------------------------+----------+------------+---------------------+---------------------+
+9 rows in set (0.00 sec)
+
+mysql> exit;
+Bye
